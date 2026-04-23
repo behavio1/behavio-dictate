@@ -163,6 +163,129 @@ Run with the repository defaults:
 ./run-whisper-dictate-pl.command
 ```
 
+## Configure The App Step By Step
+
+### 1. Install dependencies
+
+```bash
+chmod +x setup.sh download-model.sh run-whisper-dictate-pl.command scripts/build_macos_dist.sh
+./setup.sh
+```
+
+### 2. Open `config.yaml`
+
+Main app behavior is configured in `config.yaml`.
+
+Current default configuration:
+
+```yaml
+backend: "mlx"
+model: "mlx-community/whisper-large-v3-turbo"
+language: "pl"
+hotkey: "cmd_r"
+sound_on_start: true
+sound_on_stop: true
+auto_paste: true
+show_overlay: true
+overlay_position: "top_center"
+trailing_space: true
+device: null
+```
+
+### 3. Set the most important parameters
+
+- `backend`: use `mlx` on Apple Silicon Macs
+- `model`: Whisper model repo id or local path
+- `language`: default spoken language, for example `pl`, `en`, or `auto`
+- `hotkey`: key used in global mode to start and stop recording
+- `auto_paste`: if `true`, the app pastes the result automatically; if `false`, it only copies to clipboard
+- `show_overlay`: shows the floating listening indicator while recording
+- `device`: microphone device index, or `null` to use the system default input
+
+### 4. Recommended model setup
+
+Recommended setting for this app:
+
+```yaml
+model: "mlx-community/whisper-large-v3-turbo"
+```
+
+This is the recommended model for Behavio Dictate because it gives the best overall speed/quality tradeoff.
+
+If you want a local offline model path instead of a remote Hugging Face id:
+
+```bash
+./download-model.sh
+```
+
+Then update `config.yaml`, for example:
+
+```yaml
+model: "models/whisper-large-v3-turbo-mlx"
+```
+
+### 5. Configure the hotkey
+
+Use one of these approaches:
+
+- persistent default in `config.yaml`
+- one-off override with `python dictate.py --global --hotkey ...`
+- launcher-specific override in `run-whisper-dictate-pl.command`
+
+Examples:
+
+```yaml
+hotkey: "cmd_r"
+hotkey: "ctrl_r"
+hotkey: "f8"
+hotkey: "r"
+```
+
+### 6. Grant macOS permissions
+
+For global mode or the packaged app, enable:
+
+1. `Microphone`
+2. `Accessibility`
+3. `Input Monitoring`
+
+If you use `fn`, also set:
+
+`System Settings > Keyboard > Press fn key to > Do Nothing`
+
+### 7. Test the configuration
+
+Useful commands:
+
+```bash
+source venv/bin/activate
+python dictate.py --list-devices
+python dictate.py --global --debug-keys
+python dictate.py --test
+```
+
+### 8. Run the app
+
+From source in terminal mode:
+
+```bash
+source venv/bin/activate
+python dictate.py
+```
+
+From source in global mode:
+
+```bash
+source venv/bin/activate
+python dictate.py --global
+```
+
+With the repository launcher:
+
+```bash
+./run-whisper-dictate-pl.command
+```
+
 ## Build The macOS App
 
 Build a distributable `.app` and release ZIP locally:
@@ -172,6 +295,98 @@ Build a distributable `.app` and release ZIP locally:
 ```
 
 This produces release-ready files in `dist/`.
+
+## Build And Deploy Step By Step
+
+### 1. Prepare the environment
+
+```bash
+git clone git@github.com-behavio1:behavio1/behavio-dictate.git
+cd behavio-dictate
+chmod +x setup.sh download-model.sh run-whisper-dictate-pl.command scripts/build_macos_dist.sh
+./setup.sh
+```
+
+### 2. Verify the app config before packaging
+
+Make sure `config.yaml` contains the values you want to ship in the app bundle, especially:
+
+- `model`
+- `language`
+- `hotkey`
+- `auto_paste`
+- `show_overlay`
+
+The build includes `config.yaml` inside the packaged app, so these defaults become the initial shipped defaults.
+
+### 3. Build the app bundle
+
+```bash
+./scripts/build_macos_dist.sh
+```
+
+This script:
+
+1. checks that you are on macOS Apple Silicon
+2. uses `venv/bin/python`
+3. installs PyInstaller if needed
+4. builds `Behavio Dictate.app`
+5. creates release ZIP archives in `dist/`
+
+### 4. Check the build outputs
+
+Expected files:
+
+- `dist/Behavio Dictate.app`
+- `dist/Behavio Dictate-macOS.zip`
+- `dist/Behavio Dictate-share.zip`
+
+### 5. Smoke-test the packaged app
+
+Before publishing, test at least this:
+
+1. open `dist/Behavio Dictate.app`
+2. confirm microphone permission prompt works
+3. confirm overlay appears during recording
+4. confirm the selected hotkey starts and stops recording
+5. confirm text is copied or pasted as expected
+
+### 6. Push the repository changes
+
+```bash
+git status
+git add .
+git commit -m "Describe your release change"
+git push origin main
+```
+
+### 7. Create a release tag
+
+```bash
+git tag -a v0.1.1 -m "Behavio Dictate 0.1.1"
+git push origin v0.1.1
+```
+
+### 8. Publish the GitHub Release
+
+Example with GitHub CLI:
+
+```bash
+gh release create v0.1.1 \
+  "dist/Behavio Dictate-share.zip#Behavio Dictate for macOS" \
+  "dist/Behavio Dictate-macOS.zip#Behavio Dictate app archive" \
+  --repo behavio1/behavio-dictate \
+  --title "Behavio Dictate 0.1.1" \
+  --notes "Short release notes here"
+```
+
+### 9. Share the correct asset
+
+For end users, the preferred download is usually:
+
+- `Behavio Dictate-share.zip`
+
+It contains the app plus the short macOS usage note.
 
 ## Model Options
 
