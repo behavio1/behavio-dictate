@@ -10,6 +10,10 @@ Local voice-to-text dictation for macOS. Hold a hotkey, speak, release, and the 
 - Supports direct transcription and translation-to-English flows
 - Can run from source or as a packaged `.app`
 
+## Inspiration
+
+Behavio Dictate was inspired by the original [Whisper Dictate](https://github.com/GuigsEvt/whisper-dictate) project.
+
 ## Download
 
 For a ready-to-run macOS build, use the latest GitHub Release:
@@ -250,7 +254,7 @@ Build outputs, local models, virtual environments, and backup copies are intenti
 
 ## Credits
 
-This project builds on the ideas and codebase of the original Whisper Dictate project and has been adapted for the Behavio workflow and macOS app distribution.
+This project builds on the ideas and codebase of the original [Whisper Dictate](https://github.com/GuigsEvt/whisper-dictate) project and has been adapted for the Behavio workflow and macOS app distribution.
 
 ## License
 
