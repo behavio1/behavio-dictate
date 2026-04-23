@@ -2,8 +2,6 @@
 
 Local voice-to-text dictation for macOS. Hold a hotkey, speak, release, and the text is pasted into the active app. The app runs locally on Apple Silicon using Whisper via MLX.
 
-![Behavio Dictate Demo](assets/demo.gif)
-
 ## What It Does
 
 - Dictates into any macOS app with a global hotkey
@@ -32,6 +30,91 @@ This repository is currently configured with Behavio-specific defaults:
 
 You can change these values in `config.yaml`.
 
+We recommend `large-v3-turbo` as the default model for this app. It gives the best overall balance of speed and quality and is the recommended model for Behavio Dictate.
+
+## Hotkey Configuration
+
+The hotkey is only relevant in global mode, meaning when you run the app with `--global` or launch the packaged macOS app.
+
+You can configure it in three places:
+
+### 1. Persistent project default: `config.yaml`
+
+Edit the `hotkey` field in `config.yaml`:
+
+```yaml
+hotkey: "cmd_r"
+```
+
+Use this when you want your preferred shortcut to be the default every time you run the app.
+
+### 2. One-off override from the command line
+
+Pass `--hotkey` together with `--global`:
+
+```bash
+python dictate.py --global --hotkey esc
+python dictate.py --global --hotkey f6
+python dictate.py --global --hotkey r
+```
+
+This overrides the value from `config.yaml` only for the current launch.
+
+### 3. Repository launcher script
+
+If you use `run-whisper-dictate-pl.command`, the hotkey is also set there explicitly:
+
+```bash
+./run-whisper-dictate-pl.command
+```
+
+That script currently runs:
+
+```bash
+python dictate.py --config config.yaml --global --language pl --model mlx-community/whisper-large-v3-turbo --hotkey cmd_r
+```
+
+If you want that launcher to use another shortcut by default, update the `--hotkey ...` argument in `run-whisper-dictate-pl.command`.
+
+### Supported hotkey values
+
+These values are supported by the app:
+
+- `fn` or `globe`: the fn/Globe key on a Mac keyboard
+- `esc` or `escape`: Escape
+- `ctrl`, `ctrl_l`, `ctrl_r`: Control key
+- `alt`, `alt_l`, `alt_r`, `option`, `option_l`, `option_r`: Option/Alt key
+- `cmd`, `cmd_l`, `cmd_r`: Command key
+- `shift`, `shift_l`, `shift_r`: Shift key
+- `space`, `tab`, `enter`: common keyboard keys
+- `f1` to `f12`: function keys
+- any single character such as `r`, `t`, or `;`
+
+Examples:
+
+- `hotkey: "cmd_r"`: right Command
+- `hotkey: "ctrl_r"`: right Control
+- `hotkey: "f8"`: F8
+- `hotkey: "r"`: letter R
+
+### Related parameters
+
+- `--global`: enables system-wide hotkey mode
+- `--hotkey KEY`: chooses which key starts and stops recording
+- `--config FILE`: loads a different config file instead of the default `config.yaml`
+
+Example with all three together:
+
+```bash
+python dictate.py --config config.yaml --global --hotkey ctrl_r
+```
+
+### macOS note for `fn`
+
+If you use `fn`, macOS should not reserve it for the emoji picker:
+
+`System Settings > Keyboard > Press fn key to > Do Nothing`
+
 ## Requirements
 
 - macOS on Apple Silicon (`arm64`)
@@ -45,7 +128,7 @@ The default model is not committed to the repository and is not embedded in the 
 
 On first launch, the app downloads the configured model from Hugging Face and caches it locally. With the current default model, expect roughly `1.5 GB` to be downloaded once.
 
-After the model is cached, transcription works locally.
+After the model is cached, transcription works locally without needing an active internet connection.
 
 ## Quick Start From Source
 
@@ -94,16 +177,20 @@ Download a model explicitly for offline-first setup:
 ./download-model.sh
 ```
 
+Note: the repository default uses the remote model id `mlx-community/whisper-large-v3-turbo`. If you download a local copy with `download-model.sh`, the matching local path will be `models/whisper-large-v3-turbo-mlx`.
+
 Common MLX models:
 
-| Model | Size | Example |
-|-------|------|---------|
+| Model | Size | Remote repo id |
+|-------|------|----------------|
 | tiny | ~75 MB | `mlx-community/whisper-tiny-mlx` |
 | base | ~150 MB | `mlx-community/whisper-base-mlx` |
 | small | ~500 MB | `mlx-community/whisper-small-mlx` |
 | medium | ~1.5 GB | `mlx-community/whisper-medium-mlx` |
 | large-v3 | ~3.0 GB | `mlx-community/whisper-large-v3-mlx` |
 | large-v3-turbo | ~1.6 GB | `mlx-community/whisper-large-v3-turbo` |
+
+Recommended for this app: `large-v3-turbo`.
 
 ## Configuration
 
