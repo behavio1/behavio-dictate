@@ -16,7 +16,7 @@ Local voice-to-text dictation for macOS. Hold a hotkey, speak, release, and the 
 
 For a ready-to-run macOS build, use the latest GitHub Release:
 
-- `https://github.com/behavio1/behavio1/releases/latest`
+- `https://github.com/behavio1/behavio-dictate/releases/latest`
 
 Release assets are built for macOS on Apple Silicon.
 
@@ -50,8 +50,8 @@ After the model is cached, transcription works locally.
 ## Quick Start From Source
 
 ```bash
-git clone https://github.com/behavio1/behavio1.git
-cd behavio1
+git clone https://github.com/behavio1/behavio-dictate.git
+cd behavio-dictate
 chmod +x setup.sh download-model.sh run-whisper-dictate-pl.command scripts/build_macos_dist.sh
 ./setup.sh
 ```
