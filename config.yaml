@@ -1,0 +1,44 @@
+# Whisper Dictate Configuration
+# See README.md for all options
+
+# Backend — "mlx" for Apple Silicon, "faster-whisper" for NVIDIA/CPU
+backend: "mlx"
+
+# Model — HuggingFace repo name or local path (after running download-model.sh)
+# MLX examples:     mlx-community/whisper-small-mlx, models/whisper-small-mlx
+# NVIDIA examples:  Systran/faster-whisper-small, models/faster-whisper-small
+model: "mlx-community/whisper-large-v3-turbo"
+
+# Language — "en" for English (faster), null or "auto" for auto-detect
+# This is the default shown in the interactive prompt on launch
+language: "pl"
+
+# Hotkey — hold this key to record, release to transcribe (works system-wide)
+# Options: fn, esc, ctrl_r, ctrl_l, alt_r, alt_l, shift_r, cmd_r, f5, space, tab
+# Or any single character like: r, t, etc.
+# NOTE: fn key requires macOS System Settings > Keyboard > "Press fn key to" > "Do Nothing"
+hotkey: "cmd_r"
+
+# Play sounds when recording starts/stops
+sound_on_start: true
+sound_on_stop: true
+
+# Automatically paste text after transcription
+# Set to false to just copy to clipboard
+auto_paste: true
+
+# Show floating overlay on screen while recording
+show_overlay: true
+
+# Overlay position options:
+# top_left, top_center, top_right, bottom_left, bottom_center, bottom_right
+overlay_position: "top_center"
+overlay_margin_x: 16
+overlay_margin_y: 12
+
+# Add a trailing space after each transcription
+trailing_space: true
+
+# Audio input device index (use --list-devices to see available devices)
+# Set to force a specific microphone instead of the system default
+device: null

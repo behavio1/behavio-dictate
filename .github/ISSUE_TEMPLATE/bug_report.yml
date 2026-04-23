@@ -1,0 +1,60 @@
+name: Bug report
+description: Report a reproducible problem in Behavio Dictate.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an issue. Please include enough detail to reproduce it on another Mac.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact steps, including the hotkey, mode, and app used.
+      placeholder: |
+        1. Launch the app
+        2. Hold cmd_r
+        3. Speak into the microphone
+        4. Release the hotkey
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options:
+        - Terminal mode
+        - Global mode
+        - Packaged macOS app
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: macOS 14.5
+  - type: input
+    id: hardware
+    attributes:
+      label: Hardware
+      placeholder: MacBook Pro M3
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Paste terminal output or attach screenshots if available.
